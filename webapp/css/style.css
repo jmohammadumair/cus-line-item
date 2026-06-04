@@ -1,0 +1,511 @@
+/* Custom CSS for FBL5N Simulator - Matching Tailwind aesthetic */
+
+/* Shell / Header */
+/*
+.fbl5nPage .sapMPageHeader {
+    display: none;
+}
+*/
+.fbl5nShellHeader {
+    background-color: #354a5f;
+    color: white;
+    height: 3rem;
+    padding: 0 1rem;
+    border-bottom: 1px solid rgba(8, 47, 73, 0.2);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.fbl5nLogoBox {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    width: 3rem;
+    height: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.fbl5nLogoBox:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.fbl5nLogoText {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    color: #0070d2;
+}
+.fbl5nShellSeparator {
+    display: inline-block;
+    height: 1.25rem;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 0 0.75rem;
+}
+.fbl5nAppTitle {
+    color: white !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.025em;
+    margin-right: 0.5rem;
+}
+.fbl5nSystemBadge {
+    font-size: 0.625rem !important;
+    padding: 0.125rem 0.375rem;
+    background-color: rgba(14, 165, 233, 0.3);
+    color: #bae6fd !important;
+    border-radius: 0.25rem;
+    font-family: monospace;
+}
+.fbl5nSysLabel {
+    color: #94a3b8 !important;
+    font-size: 0.6875rem !important;
+    margin-right: 0.25rem;
+}
+.fbl5nSysText {
+    color: white !important;
+    font-family: monospace;
+    font-size: 0.6875rem !important;
+    margin-right: 1rem;
+}
+.fbl5nThemeBtn, .fbl5nBellBtn {
+    margin-right: 0.5rem;
+}
+.fbl5nThemeBtn .sapMBtnInner {
+    background-color: rgba(3, 105, 161, 0.5) !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    color: white !important;
+    border-radius: 0.25rem;
+}
+.fbl5nProfileBadge {
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+    background: linear-gradient(to top right, #0284c7, #4f46e5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+.fbl5nProfileBadge:hover {
+    transform: scale(1.05);
+}
+
+/* Notifications Banner */
+.fbl5nNotificationBanner {
+    background-color: #eff6ff;
+    border-bottom: 1px solid #bfdbfe;
+    padding: 0.5rem 1rem;
+}
+.fbl5nNotifIcon {
+    color: #1e3a8a !important;
+    margin-right: 0.5rem;
+}
+.fbl5nNotifTitle {
+    font-weight: 600;
+    color: #1e3a8a !important;
+    font-size: 0.75rem;
+    margin-right: 0.5rem;
+}
+.fbl5nNotifText {
+    color: #1e3a8a !important;
+    font-size: 0.75rem;
+}
+.fbl5nNotifDismissBtn .sapMBtnInner {
+    color: #3b82f6 !important;
+    font-weight: bold !important;
+}
+
+/* Main Workspace */
+.fbl5nMainWorkspace {
+    padding: 1rem;
+    background-color: #f1f5f9;
+}
+
+/* Panels */
+.fbl5nFilterPanel, .fbl5nTableWrapper, .fbl5nJsonPanel {
+    background-color: white;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+}
+.fbl5nFilterToolbar, .fbl5nTableToolbar, .fbl5nJsonToolbar {
+    background-color: #f8fafc;
+    border-bottom: 1px solid #f1f5f9;
+}
+.fbl5nFilterIcon {
+    color: #0070d2 !important;
+}
+.fbl5nFilterTitle, .fbl5nTableTitle, .fbl5nJsonTitle {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+}
+.fbl5nTableSubTitle {
+    font-size: 0.75rem;
+    color: #94a3b8 !important;
+    margin-left: 0.5rem;
+}
+
+/* Selection Mode Toggle Group */
+.fbl5nSelectionModeGroup {
+    background-color: #f1f5f9;
+    padding: 0.25rem;
+    border-radius: 0.375rem;
+    border: 1px solid #e2e8f0;
+    gap: 0.25rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+.fbl5nSelectionModeGroup .sapMBtn {
+    flex: 1;
+    margin: 0 !important;
+    height: auto !important;
+}
+.fbl5nSelModeBtn .sapMBtnInner, .fbl5nSelModeBtnActive .sapMBtnInner {
+    border: none !important;
+    font-size: 0.75rem !important;
+    border-radius: 0.25rem !important;
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0 !important;
+}
+.fbl5nSelModeBtn .sapMBtnInner {
+    background-color: transparent !important;
+    color: #475569 !important;
+}
+.fbl5nSelModeBtn .sapMBtnInner:hover {
+    color: #0f172a !important;
+    background-color: #e2e8f0 !important;
+}
+.fbl5nSelModeBtnActive .sapMBtnInner {
+    background-color: white !important;
+    color: #0070d2 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+    font-weight: 600 !important;
+}
+.fbl5nSelModeBtnActive:focus .sapMBtnInner, .fbl5nSelModeBtn:focus .sapMBtnInner {
+    outline: none !important;
+}
+
+/* KPI Cards */
+.fbl5nKpiCard {
+    background-color: white;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+.card-red { border-left: 4px solid #ef4444; }
+.card-green { border-left: 4px solid #22c55e; }
+.card-blue { border-left: 4px solid #3b82f6; }
+.card-purple { border-left: 4px solid #a855f7; }
+
+.fbl5nKpiTitle {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    letter-spacing: 0.05em;
+}
+.fbl5nKpiBadge {
+    font-size: 0.75rem !important;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-weight: bold;
+}
+.badge-red { background-color: #fee2e2; color: #991b1b !important; }
+.badge-green { background-color: #dcfce7; color: #166534 !important; }
+.badge-blue { background-color: #dbeafe; color: #1e40af !important; }
+.badge-purple { background-color: #f3e8ff; color: #6b21a8 !important; }
+
+.fbl5nKpiValue {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.025em;
+    color: #0f172a !important;
+}
+.fbl5nKpiCurrency {
+    font-size: 0.75rem !important;
+    color: #94a3b8 !important;
+    font-family: monospace;
+    margin-left: 0.25rem;
+}
+.fbl5nKpiFooter Text {
+    font-size: 0.6875rem !important;
+    color: #64748b !important;
+}
+
+/* Table Enhancements */
+.fbl5nStatusIcon {
+    font-size: 1rem;
+}
+.fbl5nDocLink {
+    color: #0070d2 !important;
+    font-family: monospace;
+    font-weight: 600 !important;
+}
+.fbl5nDocSub {
+    font-size: 0.625rem !important;
+    color: #94a3b8 !important;
+    font-family: monospace;
+}
+.fbl5nTypeBadge {
+    padding: 0.125rem 0.375rem;
+    background-color: #f1f5f9;
+    color: #334155 !important;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 0.75rem !important;
+}
+.fbl5nDateText, .fbl5nCustomerName {
+    font-size: 0.75rem !important;
+    color: #475569 !important;
+}
+.fbl5nCustomerText {
+    font-weight: 600 !important;
+    color: #1e293b !important;
+    font-family: monospace;
+}
+.fbl5nAmountBlack {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+    font-family: monospace;
+}
+.fbl5nAmountRed {
+    color: #dc2626 !important;
+    font-weight: 600 !important;
+    font-family: monospace;
+}
+.fbl5nTaxText, .fbl5nSalesText {
+    font-family: monospace;
+    color: #475569 !important;
+}
+.fbl5nClearingBadge {
+    font-family: monospace;
+    color: #065f46 !important;
+    background-color: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+}
+.fbl5nMuted {
+    color: #cbd5e1 !important;
+    font-family: monospace;
+}
+
+/* Buttons inside Table Row */
+.fbl5nDetailsBtn .sapMBtnInner {
+    font-size: 0.6875rem !important;
+    padding: 0 0.5rem;
+    border: 1px solid #cbd5e1;
+}
+.fbl5nClearBtn .sapMBtnInner {
+    font-size: 0.6875rem !important;
+    padding: 0 0.5rem;
+    background-color: #f0fdf4 !important;
+    color: #15803d !important;
+    border: 1px solid #bbf7d0;
+    font-weight: 600;
+}
+
+/* Table Toolbar Buttons */
+.fbl5nPostBtn .sapMBtnInner {
+    background-color: #059669 !important;
+    color: white !important;
+    font-weight: 600;
+}
+.fbl5nExportBtn .sapMBtnInner, .fbl5nResetDbBtn .sapMBtnInner {
+    border: 1px solid #cbd5e1 !important;
+    color: #475569 !important;
+}
+
+/* Sidebar CoPilot */
+.fbl5nCopilotSidebar {
+    background-color: #f7f9fa;
+    border-left: 1px solid #e2e8f0;
+    padding: 1rem;
+    height: 100%;
+}
+.fbl5nCopilotHeader {
+    background: linear-gradient(to right, #0369a1, #3730a3);
+    color: white;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+.fbl5nCopilotIcon {
+    color: white !important;
+    margin-right: 0.5rem;
+}
+.fbl5nCopilotTitle {
+    color: white !important;
+    font-size: 0.875rem !important;
+    font-weight: bold !important;
+}
+.fbl5nCopilotDesc {
+    font-size: 0.6875rem !important;
+    color: #e0f2fe !important;
+    margin-top: 0.25rem;
+}
+.fbl5nCopilotBox {
+    background-color: white;
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+}
+.fbl5nCopilotBoxTitle {
+    font-size: 0.75rem !important;
+    font-weight: bold !important;
+    color: #334155 !important;
+}
+.fbl5nCopilotBtns Button {
+    margin-top: 0.25rem;
+}
+.fbl5nCopilotBtns .sapMBtnInner {
+    background-color: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+    font-size: 0.75rem !important;
+    text-align: left;
+    justify-content: flex-start;
+}
+.fbl5nCopilotBtns .sapMBtnInner:hover {
+    background-color: #f0f9ff !important;
+    border-color: #7dd3fc !important;
+}
+.fbl5nCopilotOutputBox {
+    background-color: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+}
+.fbl5nCopilotOutputTitle {
+    color: #0070d2 !important;
+    font-weight: bold !important;
+}
+.fbl5nCopilotOutputText {
+    font-size: 0.6875rem !important;
+    color: #334155 !important;
+    font-family: monospace;
+    white-space: pre-line;
+}
+
+/* Analytics */
+.fbl5nAnalyticsText {
+    font-size: 0.6875rem !important;
+    color: #64748b !important;
+}
+.fbl5nAnalyticsValue {
+    font-weight: bold !important;
+    font-family: monospace;
+}
+.fbl5nAnalyticsIcon {
+    margin-right: 0.25rem;
+}
+
+/* Footer */
+.fbl5nFooter {
+    background-color: #e2e8f0 !important;
+    border-top: 1px solid #cbd5e1 !important;
+    height: 1.75rem !important;
+    font-family: monospace;
+    padding: 0 !important;
+}
+.fbl5nFooterSuccess {
+    color: #047857 !important;
+    font-weight: bold !important;
+    font-size: 0.75rem !important;
+}
+.fbl5nFooterSep {
+    color: #94a3b8 !important;
+}
+.fbl5nFooterTx {
+    color: #1e293b !important;
+    font-weight: bold !important;
+    font-size: 0.75rem !important;
+}
+.fbl5nFooterInfo {
+    font-size: 0.6875rem !important;
+    color: #334155 !important;
+}
+.fbl5nFooterBadge {
+    background-color: #0284c7;
+    color: white !important;
+    padding: 0.125rem 0.5rem;
+    border-radius: 2px;
+    font-family: sans-serif;
+    font-size: 0.625rem !important;
+}
+
+/* === SUM OF SELECTED & ACTIVE ITEMS Footer Row === */
+.fbl5nSumFooter {
+    background-color: #f1f5f9;
+    border-top: 2px solid #cbd5e1;
+    padding: 0.75rem 1rem;
+}
+.fbl5nSumIcon {
+    color: #475569 !important;
+    font-size: 1rem !important;
+    margin-right: 0.5rem;
+}
+.fbl5nSumLabel {
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+.fbl5nSumValue {
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    font-family: monospace;
+}
+.fbl5nSumValueRed {
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    color: #dc2626 !important;
+    font-family: monospace;
+}
+.fbl5nSumCurrency {
+    font-size: 0.5625rem !important;
+    color: #94a3b8 !important;
+    font-family: monospace;
+    margin-left: 0.25rem;
+}
+
+/* === Custom styling for native UI5 Table Footer Row === */
+.fbl5nTable tfoot, 
+.fbl5nTable .sapMListTFoot, 
+.fbl5nTable tr.sapMListTFootRow {
+    background-color: #f8fafc !important;
+}
+
+.fbl5nTable tfoot td,
+.fbl5nTable .sapMListTFoot td,
+.fbl5nTable .sapMListTFootCell {
+    background-color: #f8fafc !important;
+    vertical-align: middle !important;
+    padding: 0.625rem 1rem !important;
+    border-top: 2px solid #cbd5e1 !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+}
+
+/* Style boxes in the footer to align with the labels and sums */
+.fbl5nSumLabelBox {
+    height: 100%;
+}
+.fbl5nSumValueBox {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+}

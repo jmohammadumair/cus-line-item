@@ -1,0 +1,11 @@
+{
+  "name": "cus-line-item-approuter",
+  "version": "0.0.1",
+  "description": "Approuter for cus-line-item",
+  "scripts": {
+    "start": "node node_modules/@sap/approuter/approuter.js"
+  },
+  "dependencies": {
+    "@sap/approuter": "^14.0.0"
+  }
+}

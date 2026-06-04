@@ -1,0 +1,37 @@
+_schema-version: "3.2"
+ID: cus-line-item-mta
+version: 0.0.1
+modules:
+- name: cus-line-item-approuter
+  type: approuter.nodejs
+  path: approuter
+  requires:
+  - name: cus-line-item-xsuaa
+  - name: cus-line-item-destination
+  - name: cus-line-item-connectivity
+  parameters:
+    disk-quota: 256M
+    memory: 256M
+
+resources:
+- name: cus-line-item-xsuaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: xsuaa
+    service-plan: application
+    path: ./xs-security.json
+    config:
+      xsappname: cus-line-item-${space}
+      tenant-mode: dedicated
+
+- name: cus-line-item-destination
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: destination
+    service-plan: lite
+
+- name: cus-line-item-connectivity
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: connectivity
+    service-plan: lite

@@ -1,0 +1,481 @@
+<mvc:View
+    controllerName="dashboard.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:l="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    displayBlock="true">
+
+    <Page id="page" showHeader="true" title="Customer Line Item Display (FBL5N)" class="sapUiNoContentPadding fbl5nPage">
+        
+        <dependents>
+            <Dialog id="postDialog" title="Simulate SAP Customer Ledger Posting (FB01)" class="fbl5nPostDialog" contentWidth="450px">
+                <content>
+                    <l:Grid defaultSpan="L6 M6 S12" vSpacing="0" hSpacing="1" class="sapUiSmallMargin">
+                        <VBox>
+                            <Label text="Company Code" />
+                            <Input value="{postModel>/CompanyCode}" />
+                        </VBox>
+                        <VBox>
+                            <Label text="Customer Account" />
+                            <Select selectedKey="{postModel>/Customer}" items="{customers>/}" width="100%">
+                                <core:Item key="{customers>id}" text="{customers>id} - {customers>name}" />
+                            </Select>
+                        </VBox>
+                        <VBox>
+                            <Label text="Document Date" />
+                            <DatePicker value="{postModel>/DocumentDate}" valueFormat="yyyy-MM-dd" displayFormat="yyyy-MM-dd" />
+                        </VBox>
+                        <VBox>
+                            <Label text="Posting Date" />
+                            <DatePicker value="{postModel>/PostingDate}" valueFormat="yyyy-MM-dd" displayFormat="yyyy-MM-dd" />
+                        </VBox>
+                        <VBox>
+                            <Label text="Amount (INR) - Negative represents Credit" />
+                            <Input value="{postModel>/AmountInCompanyCodeCurrency}" type="Number" />
+                        </VBox>
+                        <VBox>
+                            <Label text="Billing Doc Type" />
+                            <Input value="{postModel>/BillingDocumentType}" />
+                        </VBox>
+                        <VBox>
+                            <Label text="Tax Code" />
+                            <Select selectedKey="{postModel>/TaxCode}" width="100%">
+                                <core:Item key="S1" text="S1 - Domestic Standard Tax (18%)" />
+                                <core:Item key="S2" text="S2 - Domestic Reduced Tax (5%)" />
+                                <core:Item key="S0" text="S0 - Tax Free Export Item" />
+                            </Select>
+                        </VBox>
+                        <VBox>
+                            <Label text="Initial Status" />
+                            <Select selectedKey="{postModel>/Status}" width="100%">
+                                <core:Item key="Open" text="Open (Pending Clearance)" />
+                                <core:Item key="Cleared" text="Cleared (Already Settled)" />
+                            </Select>
+                        </VBox>
+                    </l:Grid>
+                    <VBox class="sapUiSmallMargin">
+                        <Label text="Document Allocation Text" />
+                        <Input value="{postModel>/DocumentItemText}" placeholder="e.g. Cleared payment via domestic bank transfer" />
+                    </VBox>
+                </content>
+                <buttons>
+                    <Button text="Post Document (FB01)" type="Emphasized" press=".onSubmitPost" />
+                    <Button text="Cancel" press=".onCancelPost" />
+                </buttons>
+            </Dialog>
+        </dependents>
+
+        <content>
+        <!-- Header Mimicking Fiori Shell -->
+        <!--
+        <HBox class="fbl5nShellHeader" alignContent="Center" alignItems="Center" justifyContent="SpaceBetween">
+            <HBox alignItems="Center" class="fbl5nShellLeft">
+                <HBox class="fbl5nLogoBox" alignItems="Center" justifyContent="Center">
+                    <Text text="SAP" class="fbl5nLogoText" />
+                </HBox>
+                <core:HTML content="&lt;span class='fbl5nShellSeparator'&gt;&lt;/span&gt;" />
+                <HBox alignItems="Center">
+                    <Title text="Customer Line Item Display (FBL5N)" class="fbl5nAppTitle" />
+                    <Label text="S/4HANA 2026" class="fbl5nSystemBadge" />
+                </HBox>
+            </HBox>
+            
+            <HBox alignItems="Center" class="fbl5nShellCenter">
+                <Label text="System:" class="fbl5nSysLabel" />
+                <Text text="S4H_PROD" class="fbl5nSysText" />
+                <Label text="Client:" class="fbl5nSysLabel" />
+                <Text text="100" class="fbl5nSysText" />
+                <Label text="User:" class="fbl5nSysLabel" />
+                <Text text="FBL5N_SIM" class="fbl5nSysText" />
+            </HBox>
+
+            <HBox alignItems="Center" class="fbl5nShellRight">
+                <Button icon="sap-icon://palette" text="Theme: {ui>/theme}" press=".onToggleTheme" class="fbl5nThemeBtn" />
+                <Button icon="sap-icon://bell" type="Transparent" press=".onToggleNotifications" class="fbl5nBellBtn" />
+                <HBox class="fbl5nProfileBadge" alignItems="Center" justifyContent="Center">
+                    <Text text="SC" />
+                </HBox>
+            </HBox>
+        </HBox>
+        -->
+
+        <!-- System Notification Banner -->
+        <VBox visible="{= ${ui>/notifications}.length > 0 }" class="fbl5nNotificationBanner">
+            <HBox alignItems="Center" justifyContent="SpaceBetween" class="fbl5nNotificationInner">
+                <HBox alignItems="Center">
+                    <core:Icon src="sap-icon://lightbulb" class="fbl5nNotifIcon" />
+                    <Text text="Fiori System Notification:" class="fbl5nNotifTitle" />
+                    <Text text="{ui>/notifications/0}" class="fbl5nNotifText" />
+                </HBox>
+                <Button text="Dismiss" type="Transparent" press=".onClearNotifications" class="fbl5nNotifDismissBtn" />
+            </HBox>
+        </VBox>
+
+        <!-- Main Layout with Dynamic Side Content for CoPilot -->
+        <!--
+        <l:DynamicSideContent
+            id="DynamicSideContent"
+            class="sapUiDSC"
+            sideContentFallDown="BelowM"
+            containerQuery="true"
+            showSideContent="true">
+            
+            <l:mainContent>
+        -->
+                <VBox class="fbl5nMainWorkspace">
+                    
+                    <!-- Selection Criteria Panel -->
+                    <Panel id="filterPanel" expandable="true" expanded="true" class="fbl5nFilterPanel">
+                        <headerToolbar>
+                            <Toolbar class="fbl5nFilterToolbar">
+                                <core:Icon src="sap-icon://sys-find" class="fbl5nFilterIcon" />
+                                <Title text="Selection Criteria (SAP FBL5N Input Parameters)" class="fbl5nFilterTitle" />
+                            </Toolbar>
+                        </headerToolbar>
+                        <content>
+                            <VBox class="fbl5nFilterContent">
+                                <l:Grid defaultSpan="XL4 L4 M6 S12" vSpacing="1" hSpacing="1">
+                                    <VBox>
+                                        <Label text="Company Code *" class="fbl5nFilterLabel" />
+                                        <Input id="inCompanyCode" value="{ui>/filter/companyCode}" showValueHelp="true" valueHelpRequest=".onCompanyCodeValueHelp" placeholder="0125" />
+                                    </VBox>
+                                    <VBox>
+                                        <Label text="Customer Account *" class="fbl5nFilterLabel" />
+                                        <Input id="inCustomer" value="{ui>/filter/customer}" showValueHelp="true" valueHelpRequest=".onCustomerValueHelp" placeholder="e.g. 1000492" />
+                                    </VBox>
+                                    <VBox>
+                                        <Label text="Line Item Selection Type" class="fbl5nFilterLabel" />
+                                        <SegmentedButton selectedKey="{ui>/filter/mode}" width="100%" selectionChange=".onFilterChange">
+                                            <items>
+                                                <SegmentedButtonItem key="Open" text="Open Items" />
+                                                <SegmentedButtonItem key="Cleared" text="Cleared Items" />
+                                                <SegmentedButtonItem key="All" text="All Items" />
+                                            </items>
+                                        </SegmentedButton>
+                                    </VBox>
+                                </l:Grid>
+
+                                <!--
+                                <l:Grid defaultSpan="XL4 L4 M6 S12" vSpacing="1" hSpacing="1" class="sapUiSmallMarginTop fbl5nFilterRow2">
+                                    [Dynamic Date Fields based on Mode grouped to maintain layout]
+                                    <VBox>
+                                        <layoutData>
+                                            <l:GridData span="XL8 L8 M12 S12" />
+                                        </layoutData>
+                                        <VBox visible="{= ${ui>/filter/mode} === 'Open' }">
+                                            <Label text="Open at Key Date" class="fbl5nFilterLabel" />
+                                            <DatePicker value="{ui>/filter/keyDate}" valueFormat="yyyy-MM-dd" displayFormat="yyyy-MM-dd" width="200px" />
+                                        </VBox>
+
+                                        <VBox visible="{= ${ui>/filter/mode} === 'Cleared' }">
+                                            <Label text="Clearing Date Range (From - To)" class="fbl5nFilterLabel" />
+                                            <HBox>
+                                                <DatePicker value="{ui>/filter/clearingDateFrom}" valueFormat="yyyy-MM-dd" displayFormat="yyyy-MM-dd" />
+                                                <Label text="to" class="sapUiTinyMarginBeginEnd fbl5nToLabel" />
+                                                <DatePicker value="{ui>/filter/clearingDateTo}" valueFormat="yyyy-MM-dd" displayFormat="yyyy-MM-dd" />
+                                            </HBox>
+                                        </VBox>
+
+                                        <VBox visible="{= ${ui>/filter/mode} === 'All' }">
+                                            <Label text="Posting Date Range (From - To)" class="fbl5nFilterLabel" />
+                                            <HBox>
+                                                <DatePicker value="{ui>/filter/postingDateFrom}" valueFormat="yyyy-MM-dd" displayFormat="yyyy-MM-dd" />
+                                                <Label text="to" class="sapUiTinyMarginBeginEnd fbl5nToLabel" />
+                                                <DatePicker value="{ui>/filter/postingDateTo}" valueFormat="yyyy-MM-dd" displayFormat="yyyy-MM-dd" />
+                                            </HBox>
+                                        </VBox>
+                                    </VBox>
+
+                                    [Item Types]
+                                    <VBox>
+                                        <layoutData>
+                                            <l:GridData span="XL4 L4 M12 S12" />
+                                        </layoutData>
+                                        <Label text="Item Type Filter" class="fbl5nFilterLabel" />
+                                        <HBox wrap="Wrap" class="fbl5nCheckboxes">
+                                            <CheckBox text="Normal Items" selected="{ui>/filter/typeNormal}" />
+                                            <CheckBox text="Special G/L Transactions" selected="{ui>/filter/typeSpecialGL}" />
+                                            <CheckBox text="Noted Items" selected="{ui>/filter/typeNoted}" />
+                                            <CheckBox text="Parked Items" selected="{ui>/filter/typeParked}" />
+                                        </HBox>
+                                    </VBox>
+                                </l:Grid>
+                                -->
+
+                                <HBox justifyContent="End" alignItems="Center" wrap="Wrap" class="fbl5nFilterActions sapUiSmallMarginTop">
+                                    <!-- <HBox alignItems="Center">
+                                        <Text text="Active Layout: " class="fbl5nLayoutTextMuted" />
+                                        <Text text="Standard SAP FBL5N Layout" class="fbl5nLayoutText" />
+                                    </HBox> -->
+                                    <HBox wrap="Wrap" class="fbl5nFilterActionsInner">
+                                        <Button text="Reset parameters" type="Transparent" press=".onResetFilters" class="fbl5nResetBtn sapUiSmallMarginEnd" />
+                                        <Button text="Execute Search (F8)" type="Emphasized" icon="sap-icon://sys-enter" press=".onApplyFilters" class="fbl5nExecBtn" />
+                                    </HBox>
+                                </HBox>
+                            </VBox>
+                        </content>
+                    </Panel>
+
+                    <!-- KPI Cards Section -->
+                    <l:Grid defaultSpan="XL3 L3 M6 S12" class="sapUiSmallMarginTop">
+                        <!-- Open Balance -->
+                        <VBox class="fbl5nKpiCard card-red">
+                            <HBox justifyContent="SpaceBetween" alignItems="Center">
+                                <Title text="OPEN BALANCE" class="fbl5nKpiTitle" />
+                                <Label text="Unpaid" class="fbl5nKpiBadge badge-red" />
+                            </HBox>
+                            <HBox alignItems="Baseline" class="sapUiSmallMarginTop">
+                                <Title text="{ui>/kpi/openBalanceFormatted}" class="fbl5nKpiValue" />
+                                <Text text="INR" class="fbl5nKpiCurrency" />
+                            </HBox>
+                            <HBox alignItems="Center" class="fbl5nKpiFooter sapUiSmallMarginTop">
+                                <core:Icon src="sap-icon://sys-cancel-2" color="red" />
+                                <Text text="Active pending legal collections" class="sapUiTinyMarginBegin" />
+                            </HBox>
+                        </VBox>
+
+                        <!-- Cleared Balance -->
+                        <VBox class="fbl5nKpiCard card-green">
+                            <HBox justifyContent="SpaceBetween" alignItems="Center">
+                                <Title text="CLEARED BALANCE" class="fbl5nKpiTitle" />
+                                <Label text="Settled" class="fbl5nKpiBadge badge-green" />
+                            </HBox>
+                            <HBox alignItems="Baseline" class="sapUiSmallMarginTop">
+                                <Title text="{ui>/kpi/clearedBalanceFormatted}" class="fbl5nKpiValue" />
+                                <Text text="INR" class="fbl5nKpiCurrency" />
+                            </HBox>
+                            <HBox alignItems="Center" class="fbl5nKpiFooter sapUiSmallMarginTop">
+                                <core:Icon src="sap-icon://sys-enter-2" color="green" />
+                                <Text text="Processed ledger settlements" class="sapUiTinyMarginBegin" />
+                            </HBox>
+                        </VBox>
+
+                        <!-- Net Exposure -->
+                        <VBox class="fbl5nKpiCard card-blue">
+                            <HBox justifyContent="SpaceBetween" alignItems="Center">
+                                <Title text="NET EXPOSURE" class="fbl5nKpiTitle" />
+                                <Label text="Summary" class="fbl5nKpiBadge badge-blue" />
+                            </HBox>
+                            <HBox alignItems="Baseline" class="sapUiSmallMarginTop">
+                                <Title text="{ui>/kpi/netExposureFormatted}" class="fbl5nKpiValue" />
+                                <Text text="INR" class="fbl5nKpiCurrency" />
+                            </HBox>
+                            <HBox alignItems="Center" class="fbl5nKpiFooter sapUiSmallMarginTop">
+                                <core:Icon src="sap-icon://bar-chart" color="blue" />
+                                <Text text="Combined customer balance state" class="sapUiTinyMarginBegin" />
+                            </HBox>
+                        </VBox>
+
+                        <!-- Total Items -->
+                        <VBox class="fbl5nKpiCard card-purple">
+                            <HBox justifyContent="SpaceBetween" alignItems="Center">
+                                <Title text="TOTAL LINE ITEMS" class="fbl5nKpiTitle" />
+                                <Label text="Docs" class="fbl5nKpiBadge badge-purple" />
+                            </HBox>
+                            <HBox alignItems="Baseline" class="sapUiSmallMarginTop">
+                                <Title text="{ui>/kpi/totalItems}" class="fbl5nKpiValue text-dark" />
+                                <Text text="Entries matched" class="fbl5nKpiCurrency" />
+                            </HBox>
+                            <HBox alignItems="Center" class="fbl5nKpiFooter sapUiSmallMarginTop">
+                                <core:Icon src="sap-icon://energy" color="purple" />
+                                <Text text="Showing dynamic client view" class="sapUiTinyMarginBegin" />
+                            </HBox>
+                        </VBox>
+                    </l:Grid>
+
+                    <!-- Main ALV Table -->
+                    <VBox class="fbl5nTableWrapper sapUiSmallMarginTop">
+                        <OverflowToolbar class="fbl5nTableToolbar">
+                            <Title text="Customer Line Items Table Grid" class="fbl5nTableTitle" />
+                            <Text text="({ui>/kpi/totalItems} records matches)" class="fbl5nTableSubTitle" />
+                            <ToolbarSpacer />
+                            <SearchField placeholder="Search Document, Type, Tax..." value="{ui>/search}" width="200px" search=".onSearch" liveChange=".onSearch" class="fbl5nSearchField" />
+                            <!--
+                            <Button text="Post Simulated Doc" icon="sap-icon://add" press=".onOpenPostingModal" class="fbl5nPostBtn" />
+                            <Button text="Export" icon="sap-icon://download" press=".onExportCSV" class="fbl5nExportBtn" />
+                            <Button text="Reset DB" icon="sap-icon://refresh" press=".onResetDB" class="fbl5nResetDbBtn" />
+                            -->
+                        </OverflowToolbar>
+
+                        <ScrollContainer width="100%" horizontal="true" vertical="false">
+                            <Table 
+                                id="lineItemsTable"
+                                items="{ui>/tableData}"
+                                mode="MultiSelect"
+                                selectionChange=".onSelectionChange"
+                                class="fbl5nTable">
+                                <columns>
+                                    <Column width="5rem" hAlign="Center"><Text text="Status" /></Column>
+                                    <Column width="8rem"><Text text="Doc Number" /></Column>
+                                    <Column width="6rem"><Text text="Type" /></Column>
+                                    <Column width="9rem"><Text text="Posting Date" /></Column>
+                                    <Column width="15rem">
+                                        <Text text="Customer" />
+                                        <footer>
+                                            <HBox alignItems="Center" class="fbl5nSumLabelBox" visible="{= ${ui>/kpi/totalItems} > 0 }">
+                                                <core:Icon src="sap-icon://sum" class="fbl5nSumIcon" />
+                                                <Text text="SUM OF SELECTED &amp; ACTIVE ITEMS:" class="fbl5nSumLabel" />
+                                            </HBox>
+                                        </footer>
+                                    </Column>
+                                    <Column width="12rem" hAlign="End">
+                                        <Text text="Amount in Currency" />
+                                        <footer>
+                                            <VBox alignItems="End" class="fbl5nSumValueBox" visible="{= ${ui>/kpi/totalItems} > 0 }">
+                                                <Text text="{ui>/activeFilteredTotalFormatted}" 
+                                                      class="{= ${ui>/activeFilteredTotal} &lt; 0 ? 'fbl5nSumValueRed' : 'fbl5nSumValue'}" />
+                                                <Text text="INR" class="fbl5nSumCurrency" />
+                                            </VBox>
+                                        </footer>
+                                    </Column>
+                                    <Column width="4rem"><Text text="Tax" /></Column>
+                                    <Column width="6rem"><Text text="Sales Org" /></Column>
+                                    <Column width="10rem"><Text text="Cleared By Doc" /></Column>
+                                    <Column width="12rem" hAlign="Center"><Text text="Actions" /></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem type="Active" press=".onItemPress">
+                                        <cells>
+                                            <core:Icon src="{path: 'ui>Status', formatter: '.formatter.statusIcon'}" color="{path: 'ui>Status', formatter: '.formatter.statusState'}" class="fbl5nStatusIcon" />
+                                            <VBox>
+                                                <Link text="{ui>AccountingDocument}" press=".onDocDetails" class="fbl5nDocLink" />
+                                                <Text text="Yr: {ui>FiscalYear}" class="fbl5nDocSub" />
+                                            </VBox>
+                                            <VBox>
+                                                <Label text="{= ${ui>BillingDocumentType} || 'RV' }" class="fbl5nTypeBadge" />
+                                                <Text text="Line: {ui>LedgerGLLineItem}" class="fbl5nDocSub" />
+                                            </VBox>
+                                            <VBox>
+                                                <Text text="{path: 'ui>PostingDate', formatter: '.formatter.formatDate'}" class="fbl5nDateText" />
+                                                <Text text="Doc: {path: 'ui>DocumentDate', formatter: '.formatter.formatDate'}" class="fbl5nDocSub" />
+                                            </VBox>
+                                            <VBox>
+                                                <Text text="{ui>Customer}" class="fbl5nCustomerText" />
+                                                <Text text="{ui>CustomerName}" class="fbl5nCustomerName" />
+                                            </VBox>
+                                            <VBox alignItems="End">
+                                                <Text text="{path: 'ui>AmountInCompanyCodeCurrency', formatter: '.formatter.formatAmount'}" 
+                                                      class="{= ${ui>AmountInCompanyCodeCurrency} &lt; 0 ? 'fbl5nAmountRed' : 'fbl5nAmountBlack'}" />
+                                                <Text text="{ui>CompanyCodeCurrency}" class="fbl5nCurrencySub" />
+                                            </VBox>
+                                            <Text text="{= ${ui>TaxCode} || 'S1' }" class="fbl5nTaxText" />
+                                            <VBox>
+                                                <Text text="{= ${ui>SalesOrganization} || '5206' }" class="fbl5nSalesText" />
+                                                <Text text="Ch: {= ${ui>DistributionChannel} || 'Z1' }" class="fbl5nDocSub" />
+                                            </VBox>
+                                            <VBox visible="{= ${ui>Status} === 'Cleared' }">
+                                                <Label text="{= ${ui>ClearingAccountingDocument} || '2000041' }" class="fbl5nClearingBadge" />
+                                                <Text text="Date: {path: 'ui>ClearingDate', formatter: '.formatter.formatDate'}" class="fbl5nDocSub" />
+                                            </VBox>
+                                            <Text text="-" visible="{= ${ui>Status} !== 'Cleared' }" class="fbl5nMuted" />
+                                            <HBox justifyContent="Center">
+                                                <Button text="Details" press=".onDocDetails" class="fbl5nDetailsBtn sapUiTinyMarginEnd" />
+                                                <Button text="Clear" press=".onClearInvoice" visible="{= ${ui>Status} === 'Open' }" class="fbl5nClearBtn" />
+                                            </HBox>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </ScrollContainer>
+                    </VBox>
+
+                    <!-- Raw JSON Viewer -->
+                    <!--
+                    <Panel expandable="true" expanded="{ui>/showJson}" class="fbl5nJsonPanel sapUiSmallMarginTop">
+                        <headerToolbar>
+                            <Toolbar class="fbl5nJsonToolbar">
+                                <core:Icon src="sap-icon://attachment" class="fbl5nJsonIcon" />
+                                <Title text="ORIGINAL CUSTOMER OPEN ITEMS JSON RESPONSE PAYLOAD" class="fbl5nJsonTitle" />
+                            </Toolbar>
+                        </headerToolbar>
+                        <content>
+                            <VBox class="fbl5nJsonContent">
+                                <Text text="{ui>/jsonPayload}" class="fbl5nJsonCode" />
+                            </VBox>
+                        </content>
+                    </Panel>
+                    -->
+
+                </VBox>
+        <!--
+            </l:mainContent>
+
+            <l:sideContent>
+                <VBox class="fbl5nCopilotSidebar">
+                    <VBox class="fbl5nCopilotHeader">
+                        <HBox alignItems="Center">
+                            <core:Icon src="sap-icon://magic-wand" class="fbl5nCopilotIcon" />
+                            <Title text="SAP Fiori CoPilot Assistant" class="fbl5nCopilotTitle" />
+                        </HBox>
+                        <Text text="Ask questions or filter ledger data based on your uploaded JSON fields!" class="fbl5nCopilotDesc" />
+                    </VBox>
+
+                    <VBox class="fbl5nCopilotBox sapUiSmallMarginTop">
+                        <Title text="Quick Ledger Queries:" class="fbl5nCopilotBoxTitle" />
+                        <VBox class="fbl5nCopilotBtns">
+                            <Button text="💰 Total Open Balance" press=".onCopilotQuery" app:query="What is the total open balance for Company Code 0125?" width="100%" />
+                            <Button text="📦 Filter: Billing Type F2" press=".onCopilotQuery" app:query="Show only type F2 billing documents" width="100%" />
+                            <Button text="💳 Check Credit Notes" press=".onCopilotQuery" app:query="Are there any negative credit items?" width="100%" />
+                            <Button text="👥 List customer accounts" press=".onCopilotQuery" app:query="List active customer accounts" width="100%" />
+                        </VBox>
+                    </VBox>
+
+                    <VBox visible="{= ${ui>/copilotOutput}.length > 0 }" class="fbl5nCopilotOutputBox sapUiSmallMarginTop">
+                        <HBox justifyContent="SpaceBetween" alignItems="Center">
+                            <Title text="🤖 CoPilot Result" class="fbl5nCopilotOutputTitle" />
+                            <Button icon="sap-icon://decline" type="Transparent" press=".onClearCopilot" />
+                        </HBox>
+                        <Text text="{ui>/copilotOutput}" class="fbl5nCopilotOutputText" />
+                    </VBox>
+
+                    <VBox class="fbl5nCopilotBox sapUiSmallMarginTop">
+                        <HBox alignItems="Center">
+                            <core:Icon src="sap-icon://trend-up" class="fbl5nAnalyticsIcon" />
+                            <Title text="Ledger Distribution" class="fbl5nCopilotBoxTitle" />
+                        </HBox>
+                        <VBox class="sapUiSmallMarginTop">
+                            <HBox justifyContent="SpaceBetween">
+                                <Text text="Open Invoices / Debit Value" class="fbl5nAnalyticsText" />
+                                <Text text="{path: 'ui>/kpi/debitRatio', formatter: '.formatter.formatPercent'}" class="fbl5nAnalyticsValue" />
+                            </HBox>
+                            <ProgressIndicator percentValue="{ui>/kpi/debitRatio100}" state="Error" showValue="false" height="0.5rem" class="fbl5nProgressDebit" />
+                        </VBox>
+                        <VBox class="sapUiSmallMarginTop">
+                            <HBox justifyContent="SpaceBetween">
+                                <Text text="Credits / Settled Value" class="fbl5nAnalyticsText" />
+                                <Text text="{path: 'ui>/kpi/creditRatio', formatter: '.formatter.formatPercent'}" class="fbl5nAnalyticsValue" />
+                            </HBox>
+                            <ProgressIndicator percentValue="{ui>/kpi/creditRatio100}" state="Success" showValue="false" height="0.5rem" class="fbl5nProgressCredit" />
+                        </VBox>
+                    </VBox>
+
+                </VBox>
+            </l:sideContent>
+
+        </l:DynamicSideContent>
+        -->
+        </content>
+        
+        <!--
+        <footer>
+            <Toolbar class="fbl5nFooter">
+                <HBox alignItems="Center" class="sapUiSmallMarginBegin">
+                    <core:Icon src="sap-icon://accept" color="green" class="sapUiTinyMarginEnd" />
+                    <Text text="SAP Database Connected (Client 100)" class="fbl5nFooterSuccess" />
+                    <Text text="|" class="fbl5nFooterSep sapUiSmallMarginBeginEnd" />
+                    <Text text="Transaction: FBL5N" class="fbl5nFooterTx" />
+                </HBox>
+                <ToolbarSpacer />
+                <HBox alignItems="Center" class="sapUiSmallMarginEnd">
+                    <Text text="Mode: {ui>/filter/mode} Items" class="fbl5nFooterInfo" />
+                    <Text text="Server: S4HANA.LAB.STEFANINI.LOCAL" class="fbl5nFooterInfo sapUiSmallMarginBegin" />
+                    <Label text="ACTIVE" class="fbl5nFooterBadge sapUiSmallMarginBegin" />
+                </HBox>
+            </Toolbar>
+        </footer>
+        -->
+    </Page>
+</mvc:View>

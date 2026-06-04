@@ -1,0 +1,168 @@
+<mvc:View
+    controllerName="dashboard.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:uxap="sap.uxap"
+    xmlns:layout="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <Page showHeader="false">
+        <content>
+            <uxap:ObjectPageLayout
+                id="ObjectPageLayout"
+                showTitleInHeaderContent="true"
+                showEditHeaderButton="true"
+                editHeaderButtonPress="handleEditBtnPress"
+                upperCaseAnchorBar="false">
+
+                <uxap:headerTitle>
+                    <uxap:ObjectPageDynamicHeaderTitle>
+                        <uxap:expandedHeading>
+                            <Title text="Document {AccountingDocument}" wrapping="true" class="sapUiSmallMarginEnd" />
+                        </uxap:expandedHeading>
+
+                        <uxap:snappedHeading>
+                            <FlexBox wrap="Wrap" fitContainer="true" alignItems="Center">
+                                <FlexBox wrap="NoWrap" fitContainer="true" alignItems="Center" class="sapUiTinyMarginEnd">
+                                    <Title text="Document {AccountingDocument}" wrapping="true" class="sapUiTinyMarginEnd" />
+                                </FlexBox>
+                            </FlexBox>
+                        </uxap:snappedHeading>
+
+                        <uxap:actions>
+                            <Button text="Back" type="Transparent" icon="sap-icon://nav-back" press=".onNavBack"/>
+                        </uxap:actions>
+                    </uxap:ObjectPageDynamicHeaderTitle>
+                </uxap:headerTitle>
+
+                <uxap:headerContent>
+                    <FlexBox wrap="Wrap" fitContainer="true" alignItems="Stretch">
+                        <VBox justifyContent="Center" class="sapUiLargeMarginEnd sapUiSmallMarginBottom">
+                            <Label text="Customer" />
+                            <Title text="{CustomerName} ({Customer})" class="sapUiTinyMarginTop"/>
+                        </VBox>
+
+                        <VBox justifyContent="Center" class="sapUiLargeMarginEnd sapUiSmallMarginBottom">
+                            <Label text="Company Code" />
+                            <Title text="{CompanyCode}" class="sapUiTinyMarginTop"/>
+                        </VBox>
+
+                        <VBox justifyContent="Center" class="sapUiLargeMarginEnd sapUiSmallMarginBottom">
+                            <Label text="Total Amount" />
+                            <ObjectNumber
+                                number="{path: 'AmountInCompanyCodeCurrency', formatter: '.formatter.formatAmount'}"
+                                unit="{CompanyCodeCurrency}"
+                                state="{path: 'AmountInCompanyCodeCurrency', formatter: '.formatter.amountColor'}"
+                                class="sapUiTinyMarginTop"/>
+                        </VBox>
+                        
+                        <VBox justifyContent="Center" class="sapUiLargeMarginEnd sapUiSmallMarginBottom">
+                            <Label text="Status" />
+                            <ObjectStatus
+                                text="{Status}"
+                                state="{path: 'Status', formatter: '.formatter.statusState'}"
+                                icon="{path: 'Status', formatter: '.formatter.statusIcon'}"
+                                class="sapUiTinyMarginTop"/>
+                        </VBox>
+                    </FlexBox>
+                </uxap:headerContent>
+
+                <uxap:sections>
+                    <!-- General Info Section -->
+                    <uxap:ObjectPageSection title="General Information">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection>
+                                <uxap:blocks>
+                                    <f:SimpleForm editable="false" layout="ColumnLayout" columnsM="2" columnsL="2" columnsXL="3">
+                                        <f:content>
+                                            <core:Title text="Dates" />
+                                            <Label text="Posting Date" />
+                                            <Text text="{path: 'PostingDate', formatter: '.formatter.formatDate'}" />
+                                            
+                                            <Label text="Document Date" />
+                                            <Text text="{path: 'DocumentDate', formatter: '.formatter.formatDate'}" />
+                                            
+                                            <Label text="Fiscal Year / Period" />
+                                            <Text text="{FiscalYear} / {FiscalPeriod}" />
+                                            
+                                            <core:Title text="Classification" />
+                                            <Label text="Document Type" />
+                                            <Text text="{= ${BillingDocumentType} || 'RV' }" />
+                                            
+                                            <Label text="Ledger / G/L Account" />
+                                            <Text text="{Ledger} / {GLAccount}" />
+                                            
+                                            <Label text="Sales Organization" />
+                                            <Text text="{SalesOrganization}" />
+                                            
+                                            <Label text="Distribution Channel" />
+                                            <Text text="{DistributionChannel}" />
+                                        </f:content>
+                                    </f:SimpleForm>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
+                    <!-- Accounting Details Section -->
+                    <uxap:ObjectPageSection title="Accounting Details">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection>
+                                <uxap:blocks>
+                                    <f:SimpleForm editable="false" layout="ColumnLayout" columnsM="2" columnsL="2" columnsXL="3">
+                                        <f:content>
+                                            <core:Title text="Amounts" />
+                                            <Label text="Amount in Transaction Currency" />
+                                            <Text text="{path: 'AmountInTransactionCurrency', formatter: '.formatter.formatAmount'} {TransactionCurrency}" />
+                                            
+                                            <Label text="Amount in Global Currency" />
+                                            <Text text="{path: 'AmountInGlobalCurrency', formatter: '.formatter.formatAmount'} {GlobalCurrency}" />
+                                            
+                                            <Label text="Tax Code" />
+                                            <Text text="{TaxCode}" />
+                                            
+                                            <core:Title text="Additional Info" />
+                                            <Label text="Document Item Text" />
+                                            <Text text="{DocumentItemText}" />
+                                            
+                                            <Label text="Assignment Reference" />
+                                            <Text text="{AssignmentReference}" />
+                                            
+                                            <Label text="Profit Center" />
+                                            <Text text="{ProfitCenter}" />
+                                        </f:content>
+                                    </f:SimpleForm>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+                    
+                    <!-- Clearing Status Section -->
+                    <uxap:ObjectPageSection title="Clearing Status" visible="{= ${Status} === 'Cleared' }">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection>
+                                <uxap:blocks>
+                                    <f:SimpleForm editable="false" layout="ColumnLayout" columnsM="2" columnsL="2" columnsXL="3">
+                                        <f:content>
+                                            <Label text="Clearing Document" />
+                                            <Text text="{ClearingAccountingDocument}" />
+                                            
+                                            <Label text="Clearing Date" />
+                                            <Text text="{path: 'ClearingDate', formatter: '.formatter.formatDate'}" />
+                                            
+                                            <Label text="Clearing Fiscal Year" />
+                                            <Text text="{ClearingDocFiscalYear}" />
+                                        </f:content>
+                                    </f:SimpleForm>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
+                </uxap:sections>
+            </uxap:ObjectPageLayout>
+        </content>
+    </Page>
+</mvc:View>

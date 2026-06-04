@@ -1,0 +1,12 @@
+{
+  "xsappname": "cus-line-item",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of cus-line-item application",
+  "scopes": [],
+  "role-templates": [],
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://*.cfapps.us10-001.hana.ondemand.com/**"
+    ]
+  }
+}
