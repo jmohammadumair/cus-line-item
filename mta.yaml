@@ -9,9 +9,36 @@ modules:
   - name: cus-line-item-xsuaa
   - name: cus-line-item-destination
   - name: cus-line-item-connectivity
+  - name: cus-line-item-html5-repo-rt
   parameters:
     disk-quota: 256M
     memory: 256M
+
+- name: dashboard-ui-deployer
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: cus-line-item-html5-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - dashboard.zip
+      name: dashboard-ui
+      target-path: resources/
+
+- name: dashboard-ui
+  type: html5
+  path: .
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build
+    supported-platforms: []
 
 resources:
 - name: cus-line-item-xsuaa
@@ -35,3 +62,15 @@ resources:
   parameters:
     service: connectivity
     service-plan: lite
+
+- name: cus-line-item-html5-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+
+- name: cus-line-item-html5-repo-rt
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime

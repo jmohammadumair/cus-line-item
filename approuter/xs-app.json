@@ -1,4 +1,5 @@
 {
+  "welcomeFile": "/dashboard/index.html",
   "authenticationMethod": "none",
   "routes": [
     {
@@ -7,6 +8,12 @@
       "destination": "SS4_DEV",
       "authenticationType": "none",
       "csrfProtection": false
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "none"
     }
   ]
 }

@@ -48,6 +48,10 @@
       "phone": true
     }
   },
+  "sap.cloud": {
+    "public": true,
+    "service": "dashboard"
+  },
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {

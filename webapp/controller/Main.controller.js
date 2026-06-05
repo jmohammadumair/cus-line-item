@@ -375,14 +375,14 @@ sap.ui.define([
 
         onCompanyCodeValueHelp: function() {
             if (!this._oCCDialog) {
-                var oModel = new JSONModel([{id: "0125", name: "Stefanini Italy & India"}, {id: "5206", name: "Stefanini Brazil"}, {id: "9900", name: "Global Tech"}]);
+                // var oModel = new JSONModel([{id: "0125", name: "Stefanini Italy & India"}, {id: "5206", name: "Stefanini Brazil"}, {id: "9900", name: "Global Tech"}]);
                 this._oCCDialog = new SelectDialog({
                     title: "Select Company Code",
                     items: {
-                        path: "/",
+                        path: "bpModel>/A_CustomerCompany",
                         template: new StandardListItem({
-                            title: "{id}",
-                            description: "{name}"
+                            title: "{bpModel>CompanyCode}",
+                            description: "Customer: {bpModel>Customer}"
                         })
                     },
                     search: function(oEvent) {
@@ -390,8 +390,8 @@ sap.ui.define([
                         var oBinding = oEvent.getSource().getBinding("items");
                         if (sValue) {
                             var oFilter = new Filter([
-                                new Filter("id", FilterOperator.Contains, sValue),
-                                new Filter("name", FilterOperator.Contains, sValue)
+                                new Filter("CompanyCode", FilterOperator.Contains, sValue),
+                                new Filter("Customer", FilterOperator.Contains, sValue)
                             ], false);
                             oBinding.filter([oFilter]);
                         } else {
@@ -405,7 +405,7 @@ sap.ui.define([
                         }
                     }.bind(this)
                 });
-                this._oCCDialog.setModel(oModel);
+                // this._oCCDialog.setModel(oModel);
                 this.getView().addDependent(this._oCCDialog);
             }
             this._oCCDialog.open();

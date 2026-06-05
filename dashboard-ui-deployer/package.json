@@ -1,0 +1,12 @@
+{
+  "name": "dashboard-ui-deployer",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "start": "node node_modules/@sap/html5-app-deployer/index.js"
+  },
+  "dependencies": {
+    "@sap/html5-app-deployer": "5.0.0"
+  }
+}
